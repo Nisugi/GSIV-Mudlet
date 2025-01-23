@@ -1,0 +1,123 @@
+
+skill
+info
+who
+wgo
+e
+w
+lua roomID
+lua roomID["current"]
+peer e
+epeer e
+l
+'yo
+;k showxml
+;showxml
+;go2 home
+;go 2home
+hide
+think to nisugi yo yo
+skills
+peer out
+exp
+peer l
+go door
+peer w
+;eherbs
+out
+yawn
+stand
+sit
+jump
+kneel
+go doorl
+;k spellwindows
+d
+u
+resource
+n
+;elogin nisugi
+look
+lua compassData
+lua oldRoomId
+lua newRoomID
+lua newRoom
+lua newRoomId
+lua vitalsData
++w
+go doorpeer out
+peer ot
+;
+lua compassDirections
+go footp
+go foot
+go path
+;k map
+;map
+;maps
+cast
+prep 1003
+stop 1003
+spell active
+lua activeSpells
+incant 1007
+1003
+spell acive
+stop 1007
+;list all
+spell
+lie
+st
+stamd
+lua injuryData
+lua feedTriggers('<dialogData id="injuries"><image id="rightHand" name="Injury1" height="0" width="0"/></dialogData>')
+swap
+lua handsData
+glance
+prep 1007
+release 1003
+cas
+release
+glanceswap
+get diam from my back
+put left in my back
+put right in my back
+get diam
+get diam from my cloak
+lua stanceData
+stance def
+stance off
+stanc off
+stanc def
+combat
+stance
+lua encumData
+encum
+lua feedTriggers("<dialogData id='encum'><progressBar id='encumlevel' value='0' text='None' top='5' left='-5' align='n' width='160' height='15'/><label id='encumblurb' value='You are not encumbered enough to notice.' top='10' left='0' align='n' width='160' height='50' justify='0' anchor_top='encumlevel'/></dialogData>")
+enc
+lua expData
+lua feedTriggers("<dialogData id='expr'><label id='yourLvl' value='Level 100' top='0' left='0' align='n' width='160' height='15'/><progressBar id='mindState' value='100' text='saturated' top='45' left='3' align='n' width='160' height='15'/><progressBar id='nextLvlPB' value='100' text='42531130 experience' top='20' left='3' align='n' width='160' height='15'/></dialogData>")
+;e echo XMLData.mind
+lua printInjuryData()
+printInjuryData()
+lua feedTriggers('<dialogData id="injuries"><image id="rightArm" name="Scar2" height="0" width="0"/></dialogData>')
+health
+lua feedTriggers("<dialogData id="injuries"><image id="rightHand" name="Injury1" height="0" width="0"/></dialogData>")
+att nisugi
+qstrike -1
+att hypate
+att
+stamina
+;purify
+put diam in my cloak
+healath
+mana
+ cast
+release 10034
+lua handsData["right"]
+lua handsData["left"]
+lua handsData[left]
+;re; stop 1003
+lua feedTriggers("<dialogData id='minivitals'><skin id='manaSkin' name='manaBar' controls='mana' left='25%' top='0%' width='25%' height='100%'/><progressBar id='mana' value='98' text='mana 148/151' left='25%' customText='t' top='0%' width='25%' height='100%'/></dialogData><spell>None</spell><castTime value='1737513421'/>You sing a melody.")
+
+lue feedTriggers("<dialogData id='minivitals'><skin id='manaSkin' name='manaBar' controls='mana' left='25%' top='0%' width='25%' height='100%'/><progressBar id='mana' value='98' text='mana 148/151' left='25%' customText='t' top='0%' width='25%' height='100%'/></dialogData><spell>None</spell><castTime value='1737513421'/>You sing a melody.")
