@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Highlights</name>
+			<script>-- Grouping up highlights and tossing them up top so they trigger first.
+</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList />
+			<regexCodePropertyList />
+			<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Links Players / Items</name>
+				<script>-- Define a table of player names mapped to their respective RGB colors
+local playerColors = {
+  ["Hypate"] = {95, 145, 213},   -- Light blue for Hypate
+  ["Nisugi"] = {0, 255, 0},      -- Green for Nisugi
+  ["Sugiin"] = {0, 0, 255},      -- Blue for Sugiin
+}
+
+-- Get the current line being processed in the MUD client
+local line = getCurrentLine()
+
+-- Loop through all matches in the line using a regex pattern to capture XML-like tags and their content
+-- gmatch captures:
+--   - `tag`: The entire XML tag (e.g., `&lt;a exist="-123" noun="example"&gt;Hypate&lt;/a&gt;`)
+--   - `thing`: The content within the tag (e.g., `Hypate`)
+for tag, thing in line:gmatch('(&lt;a exist="-[^"]+" noun="[^"]+"&gt;([^&lt;]+)&lt;/a&gt;)') do
+  -- Look up the color for the extracted content (`thing`) in the `playerColors` table
+  -- If not found, default to a brownish color {168, 100, 82}
+  local color = playerColors[thing] or {168, 100, 82}
+
+  -- If a valid color is found or defaulted, apply it to the matched text
+  if color then
+    -- Select the entire XML tag (`tag`) in the current line
+    if selectString(tag, 1) &gt; 0 then
+      -- Apply the color to the selected text
+      setFgColor(unpack(color))
+      -- Deselect to finalize formatting and avoid interfering with other parts of the line
+      deselect()
+    end
+  end
+end</script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList>
+					<string>&lt;a exist="-[^"]+" noun="[^"]+"&gt;([^&lt;]+)&lt;/a&gt;</string>
+				</regexCodeList>
+				<regexCodePropertyList>
+					<integer>1</integer>
+				</regexCodePropertyList>
+			</Trigger>
+			<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Links MonsterBold</name>
+				<script>local creatureColors = {
+  ["muscular brindlecat"] = {95, 145, 213},
+  ["hulking semi-melanistic panther"] = {255, 0, 0},
+  ["spectacled bear"] = {0, 255, 0},
+}
+
+local line = getCurrentLine()
+
+for tag, creature in line:gmatch('(&lt;pushBold/&gt;[^&lt;]+&lt;a exist="[^"]+" noun="[^"]+"&gt;([^&lt;]+)&lt;/a&gt;&lt;popBold/&gt;)') do
+  local color = creatureColors[creature] or {255, 0, 0}
+  if color then
+    if selectString(tag, 1) &gt; 0 then
+      setFgColor(unpack(color))
+      deselect()
+    end
+  end
+end</script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList>
+					<string>&lt;pushBold/&gt;([^&lt;]+)&lt;a exist="[^"]+" noun="[^"]+"&gt;([^&lt;]+)&lt;/a&gt;&lt;popBold/&gt;</string>
+				</regexCodeList>
+				<regexCodePropertyList>
+					<integer>1</integer>
+				</regexCodePropertyList>
+			</Trigger>
+			<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Links Commands</name>
+				<script>selectString(matches[1], 1)
+replace(matches[2])
+
+-- uncomment to change color of all caps commands
+-- setFgColor(192, 192, 0)
+deselect()
+
+</script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList>
+					<string>&lt;d&gt;(.*)&lt;/d&gt;</string>
+					<string> &lt;d cmd='[^']+'&gt;(.*)&lt;/d&gt;</string>
+				</regexCodeList>
+				<regexCodePropertyList>
+					<integer>1</integer>
+					<integer>1</integer>
+				</regexCodePropertyList>
+			</Trigger>
+		</TriggerGroup>
+	</TriggerPackage>
+</MudletPackage>
