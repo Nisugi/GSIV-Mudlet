@@ -19,6 +19,6 @@ function processPrompt(line)
   deleteLine()
 end
 
-tempRegexTrigger("<prompt time=", function() processPrompt(line) end)
+tempRegexTrigger("<prompt time=\".-\">.-</prompt>", function() processPrompt(line) end)
 
 tempRegexTrigger("<nav rm='([^']+)'/>", function() captureRoomID() end)
