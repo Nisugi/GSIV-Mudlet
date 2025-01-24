@@ -8,13 +8,13 @@ characterName = getProfileName()
 function connectToLichSession(characterName)
   -- Determine the session file path based on OS
   local tmpDir
-  --if getOS() == "Windows" then
+  if getOS() == "windows" then -- this is returning lower case, even though it echos as upper case
     tmpDir = os.getenv("TEMP") -- Windows temp directory
-  --elseif getOS() == "MacOS" then
-    --tmpDir = "/tmp" -- Standard macOS temp directory
-  --else
-    --tmpDir = "/tmp" -- Standard Linux temp directory
-  --end
+  elseif getOS() == "MacOS" then
+    tmpDir = "/tmp" -- Standard macOS temp directory
+  else
+    tmpDir = "/tmp" -- Standard Linux temp directory
+  end
 
   -- Normalize slashes for Mudlet's path handling
   tmpDir = tmpDir:gsub("\\", "/")
