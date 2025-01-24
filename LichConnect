@@ -1,0 +1,69 @@
+-- uncomment to specify character name instead of using profile name
+-- characterName = "Nisugi"
+
+-- comment out if profile name is not character name or if profile name has extra stuff like GST-Nisugi and use the above to specify name.
+characterName = getProfileName()
+
+-- Function to connect Mudlet to the server using Lich session data
+function connectToLichSession(characterName)
+  -- Determine the session file path based on OS
+  local tmpDir
+  --if getOS() == "Windows" then
+    tmpDir = os.getenv("TEMP") -- Windows temp directory
+  --elseif getOS() == "MacOS" then
+    --tmpDir = "/tmp" -- Standard macOS temp directory
+  --else
+    --tmpDir = "/tmp" -- Standard Linux temp directory
+  --end
+
+  -- Normalize slashes for Mudlet's path handling
+  tmpDir = tmpDir:gsub("\\", "/")
+  echo(tmpDir)
+  -- Path to the session file
+  local sessionFilePath = string.format("%s/simutronics/sessions/%s.session", tmpDir, characterName)
+  
+
+  -- Read the session file
+  local file = io.open(sessionFilePath, "r")
+  if not file then
+    cecho(string.format("<red>[ERROR] Could not open session file: %s\n", sessionFilePath))
+    return
+  end
+
+  -- Parse the JSON content
+  local jsonContent = file:read("*a")
+  file:close()
+
+  local success, sessionData = pcall(yajl.to_value, jsonContent) -- Use yajl for JSON parsing
+  if not success then
+    cecho("<red>[ERROR] Failed to parse session file JSON content.\n")
+    return
+  end
+
+  -- Extract host and port from the session data
+  local host = sessionData.host
+  local port = sessionData.port
+
+  if not host or not port then
+    cecho("<red>[ERROR] Invalid session data: Missing host or port.\n")
+    return
+  end
+
+  -- Connect to the server
+  cecho(string.format("<green>[INFO] Connecting to %s:%d\n", host, port))
+  connectToServer(host, tonumber(port))
+end
+
+-- Automatically connect to the Lich session
+tempTimer(1, function()
+  if connectToLichSession then
+    if characterName then
+      connectToLichSession(characterName)
+      echo("Connecting to Lich session for character: " .. characterName .. "...\n")
+    else
+      echo("Character name not set. Use the 'setCharName' alias to set it.\n")
+    end
+  else
+    echo("connectToLichSession function not found. Ensure it's loaded.\n")
+  end
+end)
