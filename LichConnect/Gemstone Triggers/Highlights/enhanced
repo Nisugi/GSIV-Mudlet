@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Enhanced</name>
+			<script>enhancedColor = {255, 255, 0}
+
+local line = getCurrentLine()
+
+for tag, text in line:gmatch('(&lt;pushBold/&gt;([^&lt;]+)&lt;popBold/&gt;)') do
+  if selectString(tag, 1) &gt; 0 then
+    -- Check if the text is all caps
+    if text:match("^%u+$") then
+      -- If all caps, make it a clickable link
+      setLink(text, function()
+        send(text) -- Send the text as a command
+      end)
+    else
+      -- Otherwise, just color the text
+      setFgColor(unpack(enhancedColor))
+    end
+    deselect()
+  end
+end
+
+resetFormat()
+
+
+
+
+--local line = getCurrentLine()
+--for tag, number in line:gmatch('(&lt;pushBold/&gt;([^&lt;]+)&lt;popBold/&gt;)') do
+--  if selectString(tag, 1) &gt; 0 then
+--    setFgColor(unpack(enhancedColor))
+--    deselect()
+--  end
+--end
+resetFormat()
+
+
+-- There is an active&lt;pushBold/&gt; CLAIM EVENT&lt;popBold/&gt; offering available for&lt;pushBold/&gt; TheJaraVerse 1,000+ Subs Silver Event Box&lt;popBold/&gt;.</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;pushBold/&gt;[^&lt;]+&lt;popBold/&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>
+

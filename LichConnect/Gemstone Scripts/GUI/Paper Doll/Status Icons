@@ -1,0 +1,56 @@
+-- Status Icon Layer
+GUIFlex.StatusIcons = Geyser.Label:new({
+  name = "GUIFlex.StatusIcons",
+  x = "2%", y = "175px", width= "96%", height = "8%",
+}, GUIFlex.PD)
+GUIFlex.StatusIcons:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+
+
+GUIFlex.StatusIconsOverlays = {}
+
+local statusIconPositions = {
+    IconBLEEDING  = {x = 40,  y = 2,   width = 24, height = 24},
+    IconDISEASED  = {x = 25,  y = 2,   width = 24, height = 24},
+    IconHIDDEN    = {x = 91,  y = 2,   width = 24, height = 24},
+    IconINVISIBLE = {x = 91,  y = 2,   width = 24, height = 24},
+    IconKNEELING  = {x = 142, y = 2,   width = 24, height = 24},
+    IconPOISONED  = {x = 26,  y = 2,   width = 24, height = 24},
+    IconPRONE     = {x = 142, y = 2,   width = 24, height = 24},
+    IconSITTING   = {x = 142, y = 2,   width = 24, height = 24},
+    IconSTANDING  = {x = 142, y = 2,   width = 24, height = 24},
+    IconWEBBED    = {x = 3,   y = 4,   width = 24, height = 24},
+    IconJOINED    = {x = 114, y = 2,   width = 24, height = 24},
+    IconSTUNNED   = {x = 65,  y = 2,   width = 24, height = 24},
+}
+
+for icon, position in pairs(statusIconPositions) do
+    GUIFlex.StatusIconsOverlays[icon] = Geyser.Label:new({
+        name = "GUIFlex.StatusIcon_" .. icon,
+        x = tostring(position.x) .. "px", 
+        y = tostring(position.y) .. "px", 
+        width = tostring(position.width) .. "px", 
+        height = tostring(position.height) .. "px"
+    }, GUIFlex.StatusIcons)
+
+    -- Set background image for each icon
+    GUIFlex.StatusIconsOverlays[icon]:setStyleSheet(string.format([[
+        background-image: url("%s");
+        background-repeat: no-repeat;
+        background-size: contain;
+    ]], imagePath .. icon .. ".png"))
+
+    -- Hide all icons initially
+    GUIFlex.StatusIconsOverlays[icon]:hide()
+end
+
+function updateStatusIcons()
+    for icon, status in pairs(statusIcons) do
+        if GUIFlex.StatusIconsOverlays[icon] then
+            if status == "y" then
+                GUIFlex.StatusIconsOverlays[icon]:show()
+            else
+                GUIFlex.StatusIconsOverlays[icon]:hide()
+            end
+        end
+    end
+end

@@ -1,0 +1,19 @@
+-- Create the Thoughts Window
+GUIFlex.Thoughts = Adjustable.Container:new({ 
+  name = "GUIFlex.Thoughts", 
+  titleText = "Thoughts", 
+  x = "0%", y = "0%",
+  width = "100%", height = "15%",
+  attached = "top"
+})
+
+GUIFlex.ThoughtsText = Geyser.MiniConsole:new({
+    name = "GUIFlex.ThoughtsText",
+    x = "0%", y = "0%",
+    autoWrap = true,
+    scrollBar = true,
+    fontSize = 10,
+    width = "100%", height = "100%",
+}, GUIFlex.Thoughts)
+
+GUIFlex.ThoughtsText:setColor("black")

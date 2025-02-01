@@ -1,0 +1,69 @@
+-- Status Icon Layer
+GUIFlex.Compass = Geyser.Label:new({
+  name = "GUIFlex.Compass",
+  x = "50%", y = "5x", width= "47%", height = "13%",
+}, GUIFlex.PD)
+
+GUIFlex.Compass:setStyleSheet(string.format([[
+  background-image: url("%s");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+]], imagePath .. "CompassDefault.png"))
+
+compassData = compassData or { directions = {} }
+GUIFlex.CompassArrows = {}
+
+local directions = {"n", "ne", "e", "se", "s", "sw", "w", "nw", "up", "down", "out"}
+
+local arrowPositions = {
+    n    = {x = 32,  y = 0,  width = 14, height = 25},
+    ne   = {x = 42,  y = 10,  width = 12, height = 12},
+    e    = {x = 38,  y = 19,  width = 25, height = 14},
+    se   = {x = 42,  y = 29,  width = 12, height = 12},
+    s    = {x = 32,  y = 25,  width = 14, height = 25},
+    sw   = {x = 23,  y = 29,  width = 12, height = 12},
+    w    = {x = 11,  y = 19,  width = 25, height = 14},
+    nw   = {x = 23,  y = 10,  width = 12, height = 12},
+    up   = {x = 65,  y = 0,   width = 14, height = 19},  -- Above
+    down = {x = 65,  y = 29,  width = 14, height = 19},  -- Below
+    out  = {x = 66,  y = 20,  width = 12, height = 12}   -- Center
+}
+
+for _, dir in ipairs(directions) do
+    local position = arrowPositions[dir]
+
+    if position then
+        GUIFlex.CompassArrows[dir] = Geyser.Label:new({
+            name = "GUIFlex.CompassArrow_" .. dir,
+            x = tostring(position.x) .. "px", 
+            y = tostring(position.y) .. "px", 
+            width = tostring(position.width) .. "px", 
+            height = tostring(position.height) .. "px"
+        }, GUIFlex.Compass)
+
+        -- Set background image for each arrow
+        GUIFlex.CompassArrows[dir]:setStyleSheet(string.format([[
+            background-image: url("%s");
+            background-repeat: no-repeat;
+            background-size: contain;
+        ]], imagePath .. dir .. ".png"))
+
+        -- Hide all arrows initially
+        GUIFlex.CompassArrows[dir]:hide()
+    end
+end
+
+function updateCompass(directions)
+    -- Hide all arrows first
+    for _, arrow in pairs(GUIFlex.CompassArrows) do
+        arrow:hide()
+    end
+
+    -- Show only the arrows for the specified directions
+    for _, dir in ipairs(directions) do
+        if GUIFlex.CompassArrows[dir] then
+            GUIFlex.CompassArrows[dir]:show()
+        end
+    end
+end

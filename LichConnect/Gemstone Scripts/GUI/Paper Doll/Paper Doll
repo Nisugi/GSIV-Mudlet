@@ -1,0 +1,16 @@
+GUIFlex.PD = Adjustable.Container:new({ 
+  name = "GUIFlex.PD", 
+  titleText = characterName, 
+  x = "0%", y = "0%",
+  width = "200px", height = "400px",
+  attached = "left"
+})
+
+-- Create Background Layer for the Mesh Pattern
+GUIFlex.PDBackground = Geyser.Label:new({
+  name = "GUIFlex.PDBackground",
+  x = "0%", y = "0%",
+  width = "100%", height = "100%"
+}, GUIFlex.PD)
+
+GUIFlex.PDBackground:setBackgroundImage(imagePath .. "MeshBackground.png")

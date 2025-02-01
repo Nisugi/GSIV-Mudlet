@@ -1,0 +1,154 @@
+-- make sure our varaibles exist
+if not roomID then
+  roomID = { current = 0, old = 0 }
+end
+
+if not expData then
+  expData = { level = 0, mind = { value = 0, text = "unknown" }, tnl = { value = 0, text = "unknown", old = "unknown" } }
+end
+
+if not stance then
+  stance = { value = 0, text = "unknown" }
+end
+
+if not encumbrance then
+  encumbrance = { value = 0, text = "unknown", blurb = "unknown" }
+end
+
+if not vitalsData then
+  vitalsData = { health = { value = 0, text = "none" }, mana = { value = 0, text = "none" }, stamina = { value = 0, text = "none" }, spirit = { value = 0, text = "none" }, mindState = { value = 0, text = "none" }, nextLvlPB = { value = 0, text = "0 until next level", old = 0 }, pbarStance = { value = 0, text = "Offensive" }, old_exp = 0}
+end
+
+
+GUIFlex.RoomNumber = Geyser.Gauge:new({
+    name = "GUIFlex.Info1",
+    x = "50%", y = "55px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.RoomNumber:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.RoomNumber:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.RoomNumber:echo(string.format("<center>Room Number</center>"))
+
+GUIFlex.Time = Geyser.Gauge:new({
+    name = "GUIFlex.Time",
+    x = "50%", y = "75px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.Time:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.Time:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+
+GUIFlex.ExpPulse = Geyser.Gauge:new({
+    name = "GUIFlex.ExpPulse",
+    x = "50%", y = "95px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.ExpPulse:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.ExpPulse:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.ExpPulse:echo(string.format("<center>Exp Pulse</center>"))
+
+GUIFlex.MindState = Geyser.Gauge:new({
+    name = "GUIFlex.MindState",
+    x = "50%", y = "115px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.MindState:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.MindState:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.MindState:echo(string.format("<center>Mind State</center>"))
+
+GUIFlex.Stance = Geyser.Gauge:new({
+    name = "GUIFlex.Stance",
+    x = "50%", y = "135px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.Stance:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.Stance:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.Stance:echo(string.format("<center>Stance</center>", stance.text))
+
+GUIFlex.Encumbrance = Geyser.Gauge:new({
+    name = "GUIFlex.Encumbrance",
+    x = "50%", y = "155px", width = "47%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.Encumbrance:setStyleSheet("background-color: #1a1a1a; border: 1px solid #404040; font-family: Arial, sans-serif")
+GUIFlex.Encumbrance:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.Encumbrance:echo(string.format("<center>Encumbrance</center>"))
+
+function updateTimeDisplay()
+    -- Get the current UTC time
+    local utc_time = os.time(os.date("!*t"))
+
+    -- Convert UTC to Eastern Time (EST/EDT)
+    local eastern_offset = -5 * 3600  -- EST is UTC-5
+    local eastern_time = utc_time + eastern_offset
+
+    -- Adjust for Daylight Saving Time (EDT is UTC-4)
+    local dst_start = os.time({year=os.date("*t").year, month=3, day=8, hour=2}) -- Second Sunday of March
+    local dst_end = os.time({year=os.date("*t").year, month=11, day=1, hour=2}) -- First Sunday of November
+
+    if eastern_time >= dst_start and eastern_time < dst_end then
+        eastern_time = eastern_time + 3600 -- Add 1 hour for daylight saving time
+    end
+
+    local time_string = os.date("%H:%M:%S", eastern_time)
+
+    GUIFlex.Time:echo(string.format("<center>%s</center>", time_string))
+
+    tempTimer(1, updateTimeDisplay)
+end
+
+
+function updateRoomNumber()
+  if not GUIFlex.RoomNumber or not roomID then return end
+  
+  GUIFlex.RoomNumber:echo(string.format("<center>u%s</center>", roomID.current))
+end
+
+function updateMindState()
+  if not GUIFlex.MindState or not vitalsData then return end
+  local mindValue = tonumber(vitalsData.mindState.value)
+  local mindText  = vitalsData.mindState.text or "unknown"
+  local total_exp = vitalsData.nextLvlPB.text:gsub(" experience", "")
+        total_exp = total_exp:gsub(" until next level", "")
+  local old_total = tonumber(vitalsData.old_exp)
+  local pulse = total_exp - old_total
+  
+  GUIFlex.MindState:setValue(mindValue, 100)
+  GUIFlex.MindState:echo(string.format("<center>%s</center>", mindText))
+  if total_exp ~= old_total then
+    GUIFlex.ExpPulse:echo(string.format("<center>Pulse: %s<center>", pulse))
+    vitalsData.old_exp = total_exp
+  end
+  
+  
+end
+
+function updateStance()
+    if not GUIFlex.Stance or not stance then return end
+
+    -- Ensure the value is a valid number
+    local stanceValue = tonumber(stance.value) or 0
+    local stanceText = stance.text or "unknown"
+    
+    -- Update the gauge with value (percentage) and display text
+    GUIFlex.Stance:setValue(stanceValue, 100)
+    GUIFlex.Stance:echo(string.format("<center>%s</center>", stanceText))
+end
+
+local function getEncumbranceColor(value)
+    if value >= 31 then
+        return "red"
+    elseif value >= 21 then
+        return "orange"
+    else
+        return "yellow"
+    end
+end
+
+function updateEncumbrance()
+    if not GUIFlex.Encumbrance or not encumbrance then return end
+
+    local encumbranceValue = tonumber(encumbrance.value) or 0
+    local encumbranceText = encumbrance.text or "unknown"
+    local encumbranceColor = getEncumbranceColor(encumbranceValue)
+  
+    GUIFlex.Encumbrance.front:setStyleSheet(string.format("background-color: %s; border: 1px solid #404040;", encumbranceColor))
+
+    GUIFlex.Encumbrance:setValue(encumbranceValue, 100)
+    GUIFlex.Encumbrance:echo(string.format("<center>%s</center>", encumbranceText))
+end
+
+updateTimeDisplay()

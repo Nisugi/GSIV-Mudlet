@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Prompt</name>
+			<script>local debugMode = false  -- Set to false to disable debug messages
+
+local time    = tonumber(matches[2])
+local content = matches[3]
+
+selectString(matches[1], 1)
+
+-- Function to check if a line starts with a specific pattern
+local function startsWith(str, pattern)
+  return str:find(pattern) == 1
+end
+
+-- Function to check if a line ONLY contains UI elements (like &lt;popStream/&gt; or &lt;prompt&gt;)
+local function isOnlyUI(str)
+  return str:match("^%s*&lt;popStream/&gt;%s*$") or str:match("^%s*&lt;prompt time=.*&gt;%s*$") or str:match("^%s*&lt;dialogData.*&gt;%s*$")
+end
+
+-- Debugging function to print messages only if debugMode is enabled
+local function debugPrint(message)
+  if debugMode then
+    echo(message .. "\n")
+  end
+end
+
+-- Debugging: Print the previous line
+debugPrint("\n[DEBUG] Checking previous line start...")
+debugPrint("[DEBUG] prevLine: " .. prevLine)
+
+-- Determine if prevLine is clear text
+local isClearText =
+  startsWith(prevLine, "&lt;a exist") or   -- Player/item text
+  startsWith(prevLine, "&lt;pushBold&gt;") or -- NPC text
+  startsWith(prevLine, "&lt;pushStream id=\"thoughts\"") or -- Thought Stream
+  startsWith(prevLine, "%s") or         -- Indented list output
+  startsWith(prevLine, "%w")            -- Normal alphanumeric text
+
+-- Debugging: Print if isClearText is true or false
+debugPrint("[DEBUG] isClearText = " .. tostring(isClearText) .. " (Prev line is " .. (isClearText and "valid text" or "NOT clear text") .. ")")
+
+
+if content:gsub("&amp;gt;", "&gt;") ~= "&gt;" then
+  -- Case 1: Prompt contains status indicators (HR&gt;, S&gt;, etc.), so we always display it
+  debugPrint("[DEBUG] Prompt contains status indicators. Keeping prompt.")
+  setFgColor(unpack(promptColor))
+  replace(content:gsub("&amp;gt;", "&gt;"))  -- Make sure we replace only the prompt
+  deselect()
+  resetFormat()
+else
+  -- Case 2: Prompt only contains '&gt;' or '&amp;gt;'
+  if isClearText then
+    -- Sub-case 2A: Previous line is clear text, keep the prompt
+    debugPrint("[DEBUG] Previous line was clear text. Keeping prompt.")
+    setFgColor(unpack(promptColor))
+    replace(content:gsub("&amp;gt;", "&gt;"))  -- Ensure coloring applies here too
+    deselect()
+    resetFormat()
+  else
+    -- Sub-case 2B: Previous line was NOT clear text, delete the prompt
+    debugPrint("[DEBUG] Previous line was NOT clear text. Removing prompt.")
+    deleteLine()  -- Remove the prompt
+  end
+end
+</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;prompt time="(\d+)"&gt;(.*)&lt;/prompt&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

@@ -1,0 +1,13 @@
+-- Automatically connect to the Lich session
+tempTimer(1, function()
+  if connectToLichSession then
+    if characterName then
+      connectToLichSession(characterName)
+      echo("Connecting to Lich session for character: " .. characterName .. "...\n")
+    else
+      echo("Character name not set. Use the 'setCharName' alias to set it.\n")
+    end
+  else
+    echo("connectToLichSession function not found. Ensure it's loaded.\n")
+  end
+end)

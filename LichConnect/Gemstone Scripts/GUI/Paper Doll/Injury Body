@@ -1,0 +1,91 @@
+-- create our injury body image, wound overlay, and update functions.
+
+GUIFlex.PDBody = Geyser.Label:new({
+  name = "GUIFlex.PDBody",
+  x = "0%", y = "0%", width = "100px", height = "200px",
+}, GUIFlex.PD) -- Attach to our main container
+
+GUIFlex.PDBody:setStyleSheet(string.format([[
+  background-image: url("%s");
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: contain;
+]], imagePath .. "injuryBody.png"))
+
+-- Make sure our data variable exists
+if not injuryData then
+  local bodyParts = { "head", "neck", "rightArm", "leftArm", "rightHand", "leftHand", "chest", "abdomen", "back", "rightLeg", "leftLeg", "rightEye", "leftEye", "nsys" }
+  injuryData = {}
+  for _, id in ipairs(bodyParts) do
+    injuryData[id] = { id = id, name = id }
+  end
+end
+
+-- Define fixed positions for injury overlays (in absolute px)
+local injuryPositions = {
+  abdomen   = { x = 37, y = 55,  width = 12, height = 12 },
+  back      = { x = 8,  y = 145, width = 12, height = 12 },
+  chest     = { x = 37, y = 34,  width = 12, height = 12 },
+  head      = { x = 37, y = 8,   width = 12, height = 12 },
+  leftArm   = { x = 56, y = 55,  width = 12, height = 12 },
+  leftEye   = { x = 70, y = 3,   width = 12, height = 12 },
+  leftHand  = { x = 63, y = 85,  width = 12, height = 12 },
+  leftLeg   = { x = 50, y = 115, width = 12, height = 12 },
+  neck      = { x = 37, y = 21,  width = 12, height = 12 },
+  nsys      = { x = 69, y = 145, width = 12, height = 12 },
+  rightArm  = { x = 20, y = 55,  width = 12, height = 12 },
+  rightEye  = { x = 7,  y = 3,   width = 12, height = 12 },
+  rightHand = { x = 13, y = 85,  width = 12, height = 12 },
+  rightLeg  = { x = 24, y = 115, width = 12, height = 12 },
+}
+
+-- Store overlay labels
+GUIFlex.PDBodyOverlays = {}
+
+function updatePDBodyOverlays()
+  -- Remove old overlays
+  for _, overlay in pairs(GUIFlex.PDBodyOverlays) do
+    overlay:hide()
+    overlay = nil
+  end
+  GUIFlex.PDBodyOverlays = {}
+
+  -- Create new overlays
+  for bodyPart, injury in pairs(injuryData) do
+    if injury.name ~= injury.id then  -- Only add overlays for actual injuries
+      local position = injuryPositions[bodyPart]
+      if position then
+        GUIFlex.PDBodyOverlays[bodyPart] = Geyser.Label:new({
+          name = "GUIFlex.PDBodyOverlay_" .. bodyPart,
+          x = tostring(position.x) .. "px", 
+          y = tostring(position.y) .. "px", 
+          width = tostring(position.width) .. "px", 
+          height = tostring(position.height) .. "px"
+        }, GUIFlex.PDBody) -- Attach to the injury body
+
+        GUIFlex.PDBodyOverlays[bodyPart]:setStyleSheet(string.format([[
+          background-image: url("%s");
+          background-repeat: no-repeat;
+          background-size: contain;
+        ]], imagePath .. injury.name .. ".png"))
+
+        GUIFlex.PDBodyOverlays[bodyPart]:show()
+      end
+    end
+  end
+end
+
+
+-- trigger matches: <dialogData id="injuries">(.+)</dialogData>
+--
+-- trigger code:
+-- for id, name in matches[2]:gmatch("<image id=\"([^\"]+)\" name=\"([^\"]+)\".-/>") do
+--  injuryData[id].name = name
+-- end
+--
+-- selectCaptureGroup(1)
+-- replace("")
+-- deselect()
+-- resetFormat()
+--
+-- updatePDBodyOverlays()

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Commands</name>
+			<script>local line = getCurrentLine()
+local color = {168, 100, 82}
+
+for tag, cmd, text in line:gmatch("(&lt;d cmd='(.-)'&gt;(.-)&lt;/d&gt;)") do
+--  cecho("&lt;red&gt; tag: " .. tag .. " cmd: " .. cmd .. " text: " .. text)
+  if selectString(tag, 1) &gt; 0 then
+    selectCaptureGroup(3)
+    setLink([[send("]] .. cmd .. [[")]], text)
+    setFgColor(unpack(color))
+    deselect()
+    resetFormat()
+  end
+end
+
+for tag, text in line:gmatch("(&lt;d&gt;(.-)&lt;/d&gt;)") do
+--  cecho("&lt;red&gt; tag: " .. tag .. " text: " .. text)
+  if selectString(tag, 1) &gt; 0 then
+    selectCaptureGroup(2)
+    setLink([[send("]] .. text .. [[")]], text)
+    setFgColor(unpack(color))
+    deselect()
+    resetFormat()
+  end
+end</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;d cmd='[^']*'&gt;.*&lt;/d&gt;</string>
+				<string>&lt;d&gt;.*&lt;/d&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

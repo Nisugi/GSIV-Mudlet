@@ -1,0 +1,50 @@
+if not vitalsData then
+  vitalsData = { health = { value = 0, text = "none" }, mana = { value = 0, text = "none" }, stamina = { value = 0, text = "none" }, spirit = { value = 0, text = "none" }, mindState = { value = 0, text = "none" }, nextLvlPB = { value = 0, text = "0 until next level", old = 0 }, pbarStance = { value = 0, text = "Offensive" }, old_exp = 0}
+end
+
+-- vitals
+GUIFlex.PDHealthBar = Geyser.Gauge:new({
+    name = "GUIFlex.PDHealthBar",
+    x = "2%", y = "301px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+GUIFlex.PDHealthBar.front:setStyleSheet("background-color: red; border: 1px solid #404040;")
+GUIFlex.PDHealthBar.back:setStyleSheet("background-color: #800000; border: 1px solid #404040;") -- Dark red
+--GUIFlex.PDHealthBar:echo(string.format("<center>Health</center>"))
+
+GUIFlex.PDManaBar = Geyser.Gauge:new({
+    name = "GUIFlex.PDManaBar",
+    x = "2%", y = "319px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+GUIFlex.PDManaBar.front:setStyleSheet("background-color: blue; border: 1px solid #404040;")
+GUIFlex.PDManaBar.back:setStyleSheet("background-color: #000080; border: 1px solid #404040;") -- Dark blue
+--GUIFlex.PDManaBar:echo(string.format("<center>Mana</center>"))
+
+GUIFlex.PDStaminaBar = Geyser.Gauge:new({
+    name = "GUIFlex.PDStaminaBar",
+    x = "2%", y = "337px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+GUIFlex.PDStaminaBar.front:setStyleSheet("background-color: yellow; border: 1px solid #404040; color: black;")
+GUIFlex.PDStaminaBar.back:setStyleSheet("background-color: #808000; border: 1px solid #404040;") -- Olive/darker yellow
+--GUIFlex.PDStaminaBar:echo(string.format("<center><font color='black'>Stamina</font></center>"))
+
+GUIFlex.PDSpiritBar = Geyser.Gauge:new({
+    name = "GUIFlex.PDSpiritBar",
+    x = "2%", y = "355px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+GUIFlex.PDSpiritBar.front:setStyleSheet("background-color: white; border: 1px solid #404040; color: black;")
+GUIFlex.PDSpiritBar.back:setStyleSheet("background-color: #d3d3d3; border: 1px solid #404040;") -- Light grey
+--GUIFlex.PDSpiritBar:echo(string.format("<center><font color='black'>Spirit</font></center>"))
+
+function updateVitals()
+  if not GUIFlex.PD or not vitalsData then return end
+  
+  GUIFlex.PDHealthBar:setValue(tonumber(vitalsData.health.value) or 0, 100)
+  GUIFlex.PDHealthBar:echo(string.format("<center>%s</center>", vitalsData.health.text))
+  GUIFlex.PDManaBar:setValue(tonumber(vitalsData.mana.value) or 0, 100)
+  GUIFlex.PDManaBar:echo(string.format("<center>%s</center>", vitalsData.mana.text))
+  GUIFlex.PDStaminaBar:setValue(tonumber(vitalsData.stamina.value) or 0, 100)
+  GUIFlex.PDStaminaBar:echo(string.format("<center><font color='black'>%s</font></center>", vitalsData.stamina.text))
+  GUIFlex.PDSpiritBar:setValue(tonumber(vitalsData.spirit.value) or 0, 100)
+  GUIFlex.PDSpiritBar:echo(string.format("<center><font color='black'>%s</font></center>", vitalsData.spirit.text))
+  
+end

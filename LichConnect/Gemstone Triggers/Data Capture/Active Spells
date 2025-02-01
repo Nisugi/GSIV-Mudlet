@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Active Spells</name>
+			<script>local line = getCurrentLine()
+deleteLine()
+
+local line = matches[1]
+charData.activeSpells = {}
+for id, value, name, time in line:gmatch("&lt;progressBar id='(.-)' value='(.-)' text=\"(.-)\".-time='(.-)'/&gt;") do
+  --  echo(string.format("Parsed: id=%s, value=%s, name=%s, time=%s\n", id, value, name, time))
+  charData.activeSpells[id] = { name = name, value = tonumber(value), time = time }
+end
+
+-- &lt;dialogData id='Active Spells' clear='t'&gt;&lt;/dialogData&gt;&lt;dialogData id='Active Spells'&gt;&lt;progressBar id='101' value='37' text="Spirit Warding I" left='22%' top='0' width='76%' height='15' time='01:33:29'/&gt;&lt;label id='l101' value='1:33 ' top='0' left='0' justify='2' anchor_right='spell'/&gt;&lt;progressBar id='104' value='14' text="Disease Resistance" left='22%' top='16' width='76%' height='15' time='00:35:48'/&gt;&lt;label id='l104' value='0:35 ' top='16' left='0' justify='2' anchor_right='spell'/&gt;&lt;progressBar id='120' value='37' text="Lesser Shroud" left='22%' top='32' width='76%' height='15' time='01:33:16'/&gt;&lt;label id='l120' value='1:33 ' top='32' left='0' justify='2' anchor_right='spell'/&gt;&lt;/dialogData&gt;</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>^&lt;dialogData id='Active Spells' clear='t'&gt;&lt;/dialogData&gt;&lt;dialogData id='Active Spells'&gt;.*&lt;/dialogData&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="no" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Tag and Bag</name>
+			<script>local rex = require("rex_pcre")
+local line = getCurrentLine()
+local extractedMatches = {}
+local seenTags = {}
+local pattern = '((&lt;?p?u?s?h?B?o?l?d?/?&gt;?)(%a*%s*)&lt;a exist="(-?%d+)" noun="([%w%-_]+)"&gt;([^&lt;]+)&lt;/a&gt;(&lt;?p?o?p?B?o?l?d?/?&gt;?))'
+
+for fullMatch, push, article, entityID, entityNoun, entityName, pop in line:gmatch(pattern) do
+  if not seenTags[entityName] then
+    local startColumn, endColumn = line:find(fullMatch, 1, true)
+    if startColumn and endColumn then
+      table.insert(extractedMatches, {
+        tag         = fullMatch,
+        push        = push,
+        article     = article,
+        entityID    = entityID,
+        entityNoun  = entityNoun,
+        entityName  = entityName,
+        pop         = pop,
+        startColumn = startColumn,
+        endColumn   = endColumn,
+        entityType  = {}
+      })
+      seenTags[entityName] = true
+    end
+  end
+end
+
+local function matchAnyPattern(subject, patternList)
+  if not subject or not patternList then
+    return false, nil
+  end
+  for _, pat in ipairs(patternList) do
+    if rex.match(subject, pat, nil, "i") then
+      return true, pat
+    end
+  end
+  return false, nil
+end
+
+local function classifyItemAll(entityName, entityNoun)
+  if not gameObjData then
+    return { "unknown" }
+  end
+
+  local matchedTypes = {}
+
+  for groupKey, typeDef in pairs(gameObjData) do
+    -- SKIP SELLABLE IF YOU DON'T WANT TO CLASSIFY THINGS AS SELLABLE
+    if groupKey ~= "sellable" then
+      local typeName = groupKey
+      -- Check EXCLUDES first
+      local exNameMatch, exNamePat = matchAnyPattern(entityName, typeDef.exclude)
+      local exNounMatch, exNounPat = matchAnyPattern(entityNoun, typeDef.exclude)
+      if exNameMatch or exNounMatch then
+        -- skip exclusions
+      else
+        -- Check NAME patterns
+        local nameMatched, namePat = matchAnyPattern(entityName, typeDef.name)
+        local isMatch = false
+        if nameMatched then
+           isMatch = true
+        end
+
+        -- Check NOUN patterns
+        if not isMatch then
+          local nounMatched, nounPat = matchAnyPattern(entityNoun, typeDef.noun)
+          if nounMatched then
+            isMatch = true
+          end
+        end
+
+        if isMatch then
+          table.insert(matchedTypes, typeName)
+        end
+      end
+    end
+  end
+
+  if #matchedTypes == 0 then
+    return { "unknown" }
+  else
+    return matchedTypes
+  end
+end
+
+for _, match in ipairs(extractedMatches) do
+  local types = classifyItemAll(match.entityName, match.entityNoun)
+
+  if #types == 1 and types[1] == "unknown" then
+    match.entityType = "unknown"
+  else
+    match.entityType = table.concat(types, ", ")
+  end
+end
+
+table.sort(extractedMatches, function(a, b)
+    return a.startColumn &gt; b.startColumn
+end)
+
+
+
+
+-------------------------------------------------------------------------------
+-- 5) PRINT OUT THE FULL TABLE OF EXTRACTED ITEMS (DEBUG)
+-------------------------------------------------------------------------------
+print("\n--- DEBUG OUTPUT: extractedMatches ---\n")
+for i, match in ipairs(extractedMatches) do
+  print(string.format("=== Item #%d ===", i))
+  print("  tag:         " .. tostring(match.tag))
+  print("  push:        " .. tostring(match.push))
+  print("  article:     " .. tostring(match.article))
+  print("  entityID:    " .. tostring(match.entityID))
+  print("  entityNoun:  " .. tostring(match.entityNoun))
+  print("  entityName:  " .. tostring(match.entityName))
+  print("  pop:         " .. tostring(match.pop))
+  print("  startColumn: " .. tostring(match.startColumn))
+  print("  endColumn:   " .. tostring(match.endColumn))
+  print("  entityType:  " .. tostring(match.entityType))
+  print()
+end
+</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;a exist="-?\d+" noun="\w+"&gt;([^&lt;]+)&lt;/a&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

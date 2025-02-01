@@ -1,0 +1,94 @@
+function randomizeUI()
+    -- Define possible values
+    local injuryNames = {"Scar1", "Scar2", "Scar3", "Injury1", "Injury2", "Injury3"}
+    local statusValues = {"y", "n"}
+    local directions = {"n", "s", "e", "w", "ne", "se", "sw", "nw", "up", "down", "out"}
+    local mindStates = {
+        {"Completely saturated", 101},
+        {"Must rest", 90},
+        {"Numbed", 75},
+        {"Becoming numbed", 62},
+        {"Muddled", 50},
+        {"Clear", 25},
+        {"Fresh and clear", 1},
+        {"Clear as a bell", 0}
+    }
+    local stances = {
+        {"defensive", 100},
+        {"guarded", 80},
+        {"neutral", 60},
+        {"forward", 40},
+        {"advance", 20},
+        {"offensive", 0}
+    }
+    local encumbranceTexts = {"Light", "Moderate", "Heavy", "Very Heavy", "Extreme"}
+    local spellNames = {
+        "Major Fire", "Call Lightning", "Minor Acid", "Elemental Wave",
+        "Spirit Shield", "Nature's Touch", "Wracking", "Sun Burst",
+        "Moonbeam", "Major Cold", "Blood Burst", "Mana Storm"
+    }
+
+    -- Randomize injuryData
+    injuryData = {}
+    for _, part in ipairs({"abdomen", "back", "chest", "head", "leftArm", "leftEye", "leftHand",
+                           "leftLeg", "neck", "nsys", "rightArm", "rightEye", "rightHand", "rightLeg"}) do
+        injuryData[part] = { id = part, name = injuryNames[math.random(#injuryNames)] }
+    end
+
+    -- Randomize statusIcons
+    statusIcons = {}
+    for _, icon in ipairs({"IconBLEEDING", "IconDISEASED", "IconHIDDEN", "IconINVISIBLE", "IconJOINED",
+                           "IconKNEELING", "IconPOISONED", "IconPRONE", "IconSITTING", "IconSTANDING",
+                           "IconSTUNNED", "IconWEBBED"}) do
+        statusIcons[icon] = statusValues[math.random(#statusValues)]
+    end
+
+    -- Randomize vitalsData
+    vitalsData = {
+        health = { text = string.format("health %d/200", math.random(50, 200)), value = math.random(0, 100) },
+        health2 = { text = string.format("health %d/200", math.random(50, 200)), value = math.random(0, 100) },
+        mana = { text = string.format("mana %d/500", math.random(100, 500)), value = math.random(0, 100) },
+        spirit = { text = string.format("spirit %d/15", math.random(5, 15)), value = math.random(0, 100) },
+        stamina = { text = string.format("stamina %d/200", math.random(50, 200)), value = math.random(0, 100) }
+    }
+
+    -- Randomize compassData
+    compassData = { directions = {} }
+    local numDirections = math.random(1, 5) -- Pick up to 5 random directions
+    for i = 1, numDirections do
+        table.insert(compassData.directions, directions[math.random(#directions)])
+    end
+
+    -- Randomize expData (mind state)
+    local mindState = mindStates[math.random(#mindStates)]
+    expData = { mind = { text = mindState[1], value = mindState[2] }, tnl = { value = 0, text = 0 } }
+
+    -- Randomize stance
+    local stancePick = stances[math.random(#stances)]
+    stance = { text = stancePick[1], value = stancePick[2] }
+
+    -- Randomize encumbrance
+    encumbrance = { text = encumbranceTexts[math.random(#encumbranceTexts)], value = math.random(0, 100) }
+
+    -- Randomize roundtime and casttime
+    local roundTime = math.random(0, 15)
+    local castTime = math.random(0, 10)
+
+    -- Randomize spellHand
+    spellHand = spellNames[math.random(#spellNames)]
+
+    -- Update UI elements
+    updateEncumbrance()
+    updateStance()
+    updateStatusIcons() -- Update status icon display
+    updatePDBodyOverlays() -- Update injuries display
+    updateCompass(compassData.directions) -- Update compass arrows
+    updateRoundTime(roundTime) -- Update round time display
+    updateCastTime(castTime) -- Update cast time display
+
+    -- Output confirmation
+    echo("Randomized UI Test Data applied.\n")
+end
+
+-- Run the function to randomize and apply values
+--randomizeUI()

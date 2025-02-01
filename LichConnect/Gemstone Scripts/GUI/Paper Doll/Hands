@@ -1,0 +1,56 @@
+GUIFlex.leftHandBar = Geyser.Label:new({
+    name = "GUIFlex.leftHandBar",
+    x = "2%", y = "244px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.leftHandBar:setStyleSheet("border: 1px solid #404040;background-color: #1a1a1a;color: #D3D3D3;font-family: Arial, sans-serif")
+GUIFlex.leftHandBar:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.leftHandBar:echo(string.format(
+    "<img src='%sleft_hand_s.png' style='width: 20px; height: 20px; position: absolute; left: 5px; top: 50%%; transform: translateY(-50%%);'> Empty",
+    imagePath
+), "white")
+
+GUIFlex.rightHandBar = Geyser.Label:new({
+    name = "GUIFlex.rightHandBar",
+    x = "2%", y = "263px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.rightHandBar:setStyleSheet("border: 1px solid #404040;background-color: #1a1a1a;color: #D3D3D3;font-family: Arial, sans-serif")
+GUIFlex.rightHandBar:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.rightHandBar:echo(string.format(
+    "<img src='%sright_hand_s.png' style='width: 20px; height: 20px; position: absolute; left: 5px; top: 50%%; transform: translateY(-50%%);'> Empty",
+    imagePath
+), "white")
+
+GUIFlex.spellHandBar = Geyser.Label:new({
+    name = "GUIFlex.spellHandBar",
+    x = "2%", y = "282px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.spellHandBar:setStyleSheet("border: 1px solid #404040;background-color: #1a1a1a;color: #D3D3D3;font-family: Arial, sans-serif")
+GUIFlex.spellHandBar:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+GUIFlex.spellHandBar:echo(string.format(
+    "<img src='%sspell_hand_s.png' style='width: 20px; height: 20px; position: absolute; left: 5px; top: 50%%; transform: translateY(-50%%);'> None",
+    imagePath
+), "white")
+
+function updateHandBar(bar, icon, content)
+  if not bar or not content then return end
+  bar:echo(string.format(
+    "<img src='%s%s' style='width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;'> %s",
+    imagePath, icon, content
+  ), "white")
+end
+
+
+-- 3 triggers with patterns:
+-- <left[^>]*>([^<]*)</left>
+-- <right[^>]*>([^<]*)</right>
+-- <spell[^>]*>([^<]*)</spell>
+--
+-- code: update for proper hand
+-- leftHand = matches[2]
+
+-- selectCaptureGroup(1)
+-- replace("")
+-- deselect()
+-- resetFormat()
+
+-- updateHandBar(leftHandBar, "left_hand.png", content)

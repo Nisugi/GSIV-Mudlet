@@ -1,0 +1,91 @@
+-- Create Active Spells Window
+GUIFlex.ActiveSpells = Adjustable.Container:new({ 
+  name = "GUIFlex.ActiveSpells", 
+  titleText = "Active Spells", 
+  x = "0%", y = "10%",
+  width = "200px", height = "20%",
+})
+
+-- Create Background Layer for the Mesh Pattern
+GUIFlex.ActiveSpellsBG = Geyser.Label:new({
+  name = "GUIFlex.ActiveSpellsBG",
+  x = "0%", y = "0%",
+  width = "100%", height = "100%"
+}, GUIFlex.ActiveSpells)
+
+GUIFlex.ActiveSpellsBG:setBackgroundImage(imagePath .. "MeshBackground.png")
+
+-- Container for Active Spells list
+GUIFlex.ActiveSpellsList = Geyser.Container:new({
+  name = "GUIFlex.ActiveSpellsList",
+  x = "0%", y = "0%",
+  width = "100%", height = "100%"
+}, GUIFlex.ActiveSpells)
+
+-- Table to track ActiveSpells Labels
+GUIFlex.ActiveSpellsEntries = {}
+
+
+
+-- Default color for unknown spells
+local defaultColor = {128, 128, 128} -- Grey
+
+-- Function to determine text color based on background brightness
+local function getTextColor(r, g, b)
+    local brightness = (r * 0.299 + g * 0.587 + b * 0.114)
+    local color = brightness > 128 and "black" or "white"
+    return color
+end
+
+-- Function to update buffs display
+function updateCooldowns()
+    -- Clear previous entries
+    for _, activeSpellsLabel in pairs(GUIFlex.ActiveSpellsEntries or {}) do
+        activeSpellsLabel:hide()
+    end
+    GUIFlex.ActiveSpellsEntries = {}
+
+    local yOffset = 0
+    local activeSpellsHeight = 17 -- Each activeSpells row height
+
+    -- Iterate over activeSpells and display them
+    for spellID, spell in pairs(activeSpells) do
+        -- Create time label (separate from ActiveSpells bar)
+        local timeLabel = Geyser.Label:new({
+            name = "ActiveSpellsTime_" .. spellID,
+            x = "0%", y = yOffset .. "px",
+            width = "20%", height = activeSpellsHeight .. "px",
+        }, GUIFlex.ActiveSpellsList)
+
+        timeLabel:setStyleSheet("color: white; font-size: 12px; text-align: right; padding-right: 1px; background-color: rgba(0, 0, 0, 0.5);")
+        timeLabel:echo(string.format("<b>%s</b>", spell.time))
+
+        -- Determine colors based on spell name
+        local color = spellColors[spell.name] or defaultColor
+        local bgColor = string.format("rgb(%d, %d, %d)", color[1], color[2], color[3])
+        local textColor = getTextColor(color[1], color[2], color[3])
+
+        -- Create buff bar (aligned after the time)
+        local activeSpellsLabel = Geyser.Label:new({
+            name = "ActiveSpells_" .. spellID,
+            x = "22%", y = yOffset .. "px",
+            width = "78%", height = activeSpellsHeight .. "px",
+        }, GUIFlex.ActiveSpellsList)
+
+        activeSpellsLabel:setStyleSheet(string.format([[
+            background-color: %s;
+            border: 1px solid #404040;
+            font-size: 12px;
+            padding-left: 5px;
+        ]], bgColor))
+
+        activeSpellsLabel:echo(string.format("<b style='color:%s;'>%s</b>", textColor, spell.name))
+
+        -- Store labels and update Y offset
+        GUIFlex.ActiveSpellsEntries[spellID] = activeSpellsLabel
+        yOffset = yOffset + activeSpellsHeight
+    end
+end
+
+-- Example: Updating Buffs when activeBuffs changes
+updateCooldowns()

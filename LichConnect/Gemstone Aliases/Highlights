@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<AliasPackage>
+		<AliasGroup isActive="yes" isFolder="yes">
+			<name>Highlights</name>
+			<script></script>
+			<command></command>
+			<packageName></packageName>
+			<regex></regex>
+			<Alias isActive="yes" isFolder="no">
+				<name>addPlayerColor(playerName, r, g, b)</name>
+				<script>-- Ensure all required matches exist
+if not matches[2] or not matches[3] or not matches[4] or not matches[5] then
+  cecho("&lt;red&gt;Usage: addPlayerColor(\"name\", r, g, b) where r, g, b are numbers\n")
+  return
+end
+
+-- Extract parameters
+local playerName = matches[2]
+local r = tonumber(matches[3])
+local g = tonumber(matches[4])
+local b = tonumber(matches[5])
+
+-- Validate RGB values
+if not r or not g or not b or r &lt; 0 or r &gt; 255 or g &lt; 0 or g &gt; 255 or b &lt; 0 or b &gt; 255 then
+  cecho("&lt;red&gt;Invalid RGB values. Ensure r, g, and b are between 0 and 255.\n")
+  return
+end
+
+-- Add or update the players's color
+playerColors[playerName] = {r, g, b}
+cecho(string.format("&lt;green&gt;Added/Updated player: %s with color RGB(%d, %d, %d)\n", playerName, r, g, b))</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^addPlayerColor\("(.+)",\s*(\d+),\s*(\d+),\s*(\d+)\)$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>addCreatureColor(creatureName, r, g, b)</name>
+				<script>-- Ensure all required matches exist
+if not matches[2] or not matches[3] or not matches[4] or not matches[5] then
+  cecho("&lt;red&gt;Usage: addCreatureColor(\"name\", r, g, b) where r, g, b are numbers\n")
+  return
+end
+
+-- Extract parameters
+local creatureName = matches[2]
+local r = tonumber(matches[3])
+local g = tonumber(matches[4])
+local b = tonumber(matches[5])
+
+-- Validate RGB values
+if not r or not g or not b or r &lt; 0 or r &gt; 255 or g &lt; 0 or g &gt; 255 or b &lt; 0 or b &gt; 255 then
+  cecho("&lt;red&gt;Invalid RGB values. Ensure r, g, and b are between 0 and 255.\n")
+  return
+end
+
+-- Add or update the creature's color
+creatureColors[creatureName] = {r, g, b}
+cecho(string.format("&lt;green&gt;Added/Updated creature: %s with color RGB(%d, %d, %d)\n", creatureName, r, g, b))</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^addCreatureColor\("(.+)",\s*(\d+),\s*(\d+),\s*(\d+)\)$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>removePlayerName(playerName)</name>
+				<script>if not playerName or not playerColors[playerName] then
+  cecho("&lt;red&gt;Player not found. Usage: removePlayerColor(\"name\")\n")
+  return
+end
+local playerName = matches[2]
+playerColors[playerName] = nil
+cecho(string.format("&lt;yellow&gt;Removed player: %s\n", playerName))</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^removePlayerName\((.+)\)$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>removeCreatureName(creatureName)</name>
+				<script>if not creatureName or not creatureColors[creatureName] then
+  cecho("&lt;red&gt;Creature not found. Usage: removeCreatureColor(\"name\")\n")
+  return
+end
+local creatureName = matches[2]
+creatureColors[creatureName] = nil
+cecho(string.format("&lt;yellow&gt;Removed creature: %s\n", creatureName))</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^removeCreatureName\((.+)\)$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>listPlayerColors</name>
+				<script>cecho("&lt;cyan&gt;Player Colors:\n")
+for playerName, color in pairs(playerColors) do
+  cecho(string.format("  - %s: RGB(%d, %d, %d)\n", playerName, color[1], color[2], color[3]))
+end</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^listPlayerColors$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>listChannelColors</name>
+				<script>cecho("&lt;cyan&gt;Channel Colors:\n")
+for channelName, color in pairs(playerColors) do
+  cecho(string.format("  - %s: RGB(%d, %d, %d)\n", channelName, color[1], color[2], color[3]))
+end</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^listChannelColors$</regex>
+			</Alias>
+			<Alias isActive="yes" isFolder="no">
+				<name>listCreatureColors</name>
+				<script>cecho("&lt;cyan&gt;Creature Colors:\n")
+for creatureName, color in pairs(creatureColors) do
+  cecho(string.format("  - %s: RGB(%d, %d, %d)\n", creatureName, color[1], color[2], color[3]))
+end</script>
+				<command></command>
+				<packageName></packageName>
+				<regex>^listChannelColors$</regex>
+			</Alias>
+		</AliasGroup>
+	</AliasPackage>
+</MudletPackage>

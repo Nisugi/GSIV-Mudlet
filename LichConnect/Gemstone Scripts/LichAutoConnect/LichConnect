@@ -1,0 +1,44 @@
+characterName = characterName or getProfileName()
+
+function connectToLichSession(characterName)
+  local tmpDir
+  if getOS() == "windows" then
+    tmpDir = os.getenv("TEMP")
+  elseif getOS() == "MacOS" then
+    tmpDir = "/tmp"
+  else
+    tmpDir = "/tmp"
+  end
+
+  tmpDir = tmpDir:gsub("\\", "/")
+  echo(tmpDir)
+  
+  local sessionFilePath = string.format("%s/simutronics/sessions/%s.session", tmpDir, characterName)
+  
+  local file = io.open(sessionFilePath, "r")
+  if not file then
+    cecho(string.format("<red>[ERROR] Could not open session file: %s\n", sessionFilePath))
+    return
+  end
+
+  local jsonContent = file:read("*a")
+  file:close()
+
+  local success, sessionData = pcall(yajl.to_value, jsonContent)
+  if not success then
+    cecho("<red>[ERROR] Failed to parse session file JSON content.\n")
+    return
+  end
+
+  -- Extract host and port from the session data
+  local host = sessionData.host
+  local port = sessionData.port
+
+  if not host or not port then
+    cecho("<red>[ERROR] Invalid session data: Missing host or port.\n")
+    return
+  end
+
+  cecho(string.format("<green>[INFO] Connecting to %s:%d\n", host, port))
+  connectToServer(host, tonumber(port))
+end

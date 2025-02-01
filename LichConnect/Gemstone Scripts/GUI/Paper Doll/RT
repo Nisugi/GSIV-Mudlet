@@ -1,0 +1,85 @@
+GUIFlex.PDRoundTime = Geyser.Gauge:new({
+    name = "GUIFlex.PDRoundTime",
+    x = "2%", y = "206px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.PDRoundTime:setStyleSheet("border: 1px solid #404040; background-color: #1a1a1a; color: #D3D3D3; font-family: Arial, sans-serif")
+GUIFlex.PDRoundTime:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+--GUIFlex.PDRoundTime:echo(string.format("<center>Round Time</center>"))
+
+GUIFlex.PDCastTime = Geyser.Gauge:new({
+    name = "GUIFlex.PDCastTime",
+    x = "2%", y = "225px", width = "96%", height = "5%",
+}, GUIFlex.PD)
+--GUIFlex.PDCastTime:setStyleSheet("border: 1px solid #404040; background-color: #1a1a1a; color: #D3D3D3; font-family: Arial, sans-serif")
+GUIFlex.PDCastTime:setStyleSheet("background-color: rgba(0, 0, 0, 0);border: none") -- transparent background
+--GUIFlex.PDCastTime:echo(string.format("<center>Cast Time</center>"))
+
+-- Function to update roundtime display with red squares
+function updateRoundTime(seconds)
+  if not GUIFlex.PDRoundTime then return end
+
+  local html = ""
+  for i = 1, math.min(seconds, 13) do
+    html = html .. string.format("<img src='%sred_square.png' width='10' height='10'> ", profilePath)
+  end
+  GUIFlex.PDRoundTime:echo(html)
+end
+
+if not rt_timer then rt_timer = nil end
+
+function updateRTCountdown()
+    if roundTimeRemaining > 0 then
+        updateRoundTime(roundTimeRemaining) -- Update UI with squares
+        roundTimeRemaining = roundTimeRemaining - 1
+        rt_timer = tempTimer(1, updateRTCountdown) -- Schedule next update
+    else
+        updateRoundTime(0) -- Clear RT when done
+        rt_timer = nil
+    end
+end
+
+function roundTimeTrigger()
+  roundTimeRemaining = tonumber(matches[2]) - os.time()-- Capture RT value
+  if rt_timer then
+    killTimer(rt_timer)
+    rt_timer = nil
+  end
+
+  updateRTCountdown()
+end
+
+
+
+
+-- Function to update cast time display with blue squares
+function updateCastTime(seconds)
+  if not GUIFlex.PDCastTime then return end
+  local html = ""
+  for i = 1, math.min(seconds, 13) do
+    html = html .. string.format("<img src='%sblue_square.png' width='10' height='10'> ", profilePath)
+  end
+  GUIFlex.PDCastTime:echo(html)
+end
+
+if not cast_timer then cast_timer = nil end
+
+function updateCTCountdown()
+    if castTimeRemaining > 0 then
+        updateCastTime(castTimeRemaining) -- Update UI with squares
+        castTimeRemaining = castTimeRemaining - 1
+        cast_timer = tempTimer(1, updateCTCountdown) -- Schedule next update
+    else
+        updateCastTime(0) -- Clear RT when done
+        cast_timer = nil
+    end
+end
+
+function castTimeTrigger()
+  castTimeRemaining = tonumber(matches[2]) - os.time()-- Capture RT value
+  if cast_timer then
+    killTimer(cast_timer)
+    cast_timer = nil
+  end
+
+  updateCTCountdown()
+end

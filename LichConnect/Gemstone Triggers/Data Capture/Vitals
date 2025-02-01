@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Vitals</name>
+			<script>local line = getCurrentLine()
+
+selectCaptureGroup(1)
+replace("")
+deselect()
+resetFormat()
+
+for block in line:gmatch("&lt;dialogData.-&gt;.-&lt;/dialogData&gt;") do
+  for barId, value, text in block:gmatch("&lt;progressBar id='(%w+)' value='(%d+)' text='([^']+)' .-/&gt;") do
+    local barValue = tonumber(value) or 0
+    charData[barId] = {
+      value = barValue,
+      text = text
+    }
+  end
+end
+--updateVitals()
+
+-- health, health2, mana, stamina, spirit, exp
+-- &lt;dialogData id='minivitals'&gt;&lt;skin id='healthSkin' name='healthBar' controls='health' left='0%' top='0%' width='25%' height='100%'/&gt;&lt;progressBar id='health' value='100' text='health 190/190' left='0%' customText='t' top='0%' width='25%' height='100%'/&gt;&lt;/dialogData&gt;&lt;dialogData id='injuries'&gt;&lt;skin id='healthSkin' name='healthBar2' controls='health2' align='n' top='160' width='140' left='0' height='15'/&gt;&lt;progressBar id='health2' value='100' text='health 190/190' customText='t' align='n' top='160' width='140' left='0' height='15'/&gt;&lt;/dialogData&gt;&lt;dialogData id='expr'&gt;&lt;label id='yourLvl' value='Level 100' top='0' left='0' align='n' width='160' height='15'/&gt;&lt;progressBar id='mindState' value='25' text='fresh and clear' top='45' left='3' align='n' width='160' height='15'/&gt;&lt;progressBar id='nextLvlPB' value='100' text='27772822 experience' top='20' left='3' align='n' width='160' height='15'/&gt;&lt;/dialogData&gt;&lt;prompt time="1738224635"&gt;&amp;gt;&lt;/prompt&gt;
+-- &lt;dialogData id='expr'&gt;&lt;label id='PTPs' value='161 PTPs' justify='4' top='0' left='20' anchor_top='mindState' width='80' height='20' tooltip='Physical Training Points'/&gt;&lt;label id='MTPs' value='0 MTPs' justify='4' top='0' left='0' anchor_top='mindState' anchor_left='PTPs' height='20' width='80' tooltip='Mental Training Points'/&gt;&lt;label id='p2m' value='1588 P2M' justify='4' top='0' left='20' anchor_top='PTPs' height='20' width='80' tooltip='Physical tps that have been converted to Mental tps'/&gt;&lt;label id='m2p' value='0 M2P' justify='4' top='0' left='0' anchor_top='MTPs' anchor_left='p2m' height='20' width='80' tooltip='Mental tps that have been converted to Physical tps'/&gt;&lt;/dialogData&gt;</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;dialogData id='minivitals'&gt;.*&lt;/dialogData&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

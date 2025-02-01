@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<KeyPackage>
+		<KeyGroup isActive="yes" isFolder="yes">
+			<name>Numpad Movement</name>
+			<packageName></packageName>
+			<script></script>
+			<command></command>
+			<keyCode>33554431</keyCode>
+			<keyModifier>0</keyModifier>
+			<Key isActive="yes" isFolder="no">
+				<name>North</name>
+				<packageName></packageName>
+				<script></script>
+				<command>north</command>
+				<keyCode>16777235</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>East</name>
+				<packageName></packageName>
+				<script></script>
+				<command>east</command>
+				<keyCode>16777236</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>South</name>
+				<packageName></packageName>
+				<script></script>
+				<command>south</command>
+				<keyCode>16777237</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>West</name>
+				<packageName></packageName>
+				<script></script>
+				<command>west</command>
+				<keyCode>16777234</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Northeast</name>
+				<packageName></packageName>
+				<script></script>
+				<command>northeast</command>
+				<keyCode>16777238</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Southeast</name>
+				<packageName></packageName>
+				<script></script>
+				<command>southeast</command>
+				<keyCode>16777239</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Southwest</name>
+				<packageName></packageName>
+				<script></script>
+				<command>southwest</command>
+				<keyCode>16777233</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Northwest</name>
+				<packageName></packageName>
+				<script></script>
+				<command>northwest</command>
+				<keyCode>16777232</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Up</name>
+				<packageName></packageName>
+				<script></script>
+				<command>up</command>
+				<keyCode>16777223</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Down</name>
+				<packageName></packageName>
+				<script></script>
+				<command>down</command>
+				<keyCode>16777222</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Out</name>
+				<packageName></packageName>
+				<script></script>
+				<command>out</command>
+				<keyCode>16777227</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer North</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer north</command>
+				<keyCode>16777235</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer East</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer east</command>
+				<keyCode>16777236</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer South</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer south</command>
+				<keyCode>16777237</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer West</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer west</command>
+				<keyCode>16777234</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Northeast</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer northeast</command>
+				<keyCode>16777238</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Southeast</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer southeast</command>
+				<keyCode>16777239</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Southwest</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer southwest</command>
+				<keyCode>16777233</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Northwest</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer northwest</command>
+				<keyCode>16777232</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Up</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer up</command>
+				<keyCode>16777223</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Down</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer down</command>
+				<keyCode>16777222</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Peer Out</name>
+				<packageName></packageName>
+				<script></script>
+				<command>peer out</command>
+				<keyCode>16777227</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Look</name>
+				<packageName></packageName>
+				<script></script>
+				<command>look</command>
+				<keyCode>43</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Info</name>
+				<packageName></packageName>
+				<script></script>
+				<command>info</command>
+				<keyCode>45</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Exp</name>
+				<packageName></packageName>
+				<script></script>
+				<command>exp</command>
+				<keyCode>42</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Resource</name>
+				<packageName></packageName>
+				<script></script>
+				<command>resource</command>
+				<keyCode>42</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Health</name>
+				<packageName></packageName>
+				<script></script>
+				<command>health</command>
+				<keyCode>47</keyCode>
+				<keyModifier>536870912</keyModifier>
+			</Key>
+			<Key isActive="yes" isFolder="no">
+				<name>Mana</name>
+				<packageName></packageName>
+				<script></script>
+				<command>mana</command>
+				<keyCode>47</keyCode>
+				<keyModifier>570425344</keyModifier>
+			</Key>
+		</KeyGroup>
+	</KeyPackage>
+</MudletPackage>

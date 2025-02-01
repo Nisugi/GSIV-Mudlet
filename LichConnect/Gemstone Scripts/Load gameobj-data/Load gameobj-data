@@ -1,0 +1,209 @@
+
+-------------------------------------------
+-- 1) xml2lua / Handler / Helpers
+-------------------------------------------
+-- If you have xml2lua in your scripts, require it, or embed it directly.
+-- For example, if you have embedded the code in your scripts, you'd do:
+--   local xml2lua = require("xml2lua")
+--   local handler = require("xmlhandler.tree")
+local status, xml2lua = pcall(require, "xml2lua")
+if not status then
+  echo("Error: xml2lua not found.\n")
+  return
+end
+
+local status2, handlerModule = pcall(require, "xmlhandler.tree")
+if not status2 then
+  echo("Error: xmlhandler.tree not found.\n")
+  return
+end
+
+local handler = handlerModule
+
+-------------------------------------------
+-- 2) Utility to ensure table keys exist
+-------------------------------------------
+local function ensureKeys(tbl, key)
+  if not tbl[key] then
+    tbl[key] = {
+      name = {},
+      noun = {},
+      exclude = {},
+      suffix = {},
+    }
+  end
+  return tbl[key]
+end
+
+function readFile(filePath)
+  local file, err = io.open(filePath, "r")
+  if not file then
+    error("Cannot open file: " .. (err or "unknown error"))
+  end
+  local content = file:read("*a")
+  file:close()
+  return content
+end
+
+-------------------------------------------
+-- 3) The main parser function
+-------------------------------------------
+function parseAndStoreGameObjData(xmlFilePath)
+  -- If you prefer, you can store the raw XML in your script or retrieve it from a URL, etc.
+  -- Below we assume you've placed "gameobj-data.xml" in a known path relative to Mudlet.
+  -- e.g., if you've downloaded it into your Mudlet profile directory, you might do:
+  -- local xmlContent = readFile(xmlFilePath)   -- readFile is a Mudlet function
+  --
+  -- Make sure to use the correct path for your environment.
+  local xmlContent = readFile(xmlFilePath)
+  if not xmlContent then
+    echo(string.format("Could not read file: %s\n", xmlFilePath))
+    return
+  end
+
+  -- Initialize the XML parser
+  local myHandler = handler:new()
+  local parser = xml2lua.parser(myHandler)
+  
+  -- Parse the XML
+  parser:parse(xmlContent)
+
+  -- We expect <data> to be the root
+  if not myHandler.root or not myHandler.root.data then
+    echo("Error: No <data> root node found!\n")
+    return
+  end
+
+  -- We'll store everything in a global table "gameObjData" in Mudlet
+  -- so you can reference it from any other script or alias.
+  gameObjData = {
+    sellable = {}
+  }
+
+local function gatherTexts(childNode)
+  local results = {}
+  if type(childNode) == "table" then
+    -- 1) If this child has direct text in "#text"
+    if childNode["#text"] then
+      table.insert(results, childNode["#text"])
+    end
+    -- 2) If this child is actually an array of sub-nodes
+    --    then each sub-node might have "#text"
+    if type(childNode[1]) == "table" then
+      for _, subnode in ipairs(childNode) do
+        if subnode["#text"] then
+          table.insert(results, subnode["#text"])
+        end
+      end
+    end
+  elseif type(childNode) == "string" then
+    -- Rarely might happen if the parser put the text directly
+    table.insert(results, childNode)
+  end
+  return results
+end
+
+  -- Parsing functions for <type> and <sellable>
+local function parseTypeNode(node)
+  local attr = node._attr
+  if not attr or not attr.name then return end
+  local tName = attr.name
+
+  local tTable = ensureKeys(gameObjData, tName)
+
+  for _, key in ipairs({"name","noun","exclude","suffix"}) do
+    local child = node[key]
+    if child then
+      local texts = gatherTexts(child)
+      for _, txt in ipairs(texts) do
+        table.insert(tTable[key], txt)
+      end
+    end
+  end
+end
+
+  local function parseSellableNode(node)
+    local attr = node._attr
+    if not attr or not attr.name then
+      return
+    end
+    local sName = attr.name
+
+    if not gameObjData.sellable[sName] then
+      gameObjData.sellable[sName] = {
+        name = {},
+        noun = {},
+        exclude = {},
+        suffix = {},
+      }
+    end
+    local sTable = gameObjData.sellable[sName]
+
+    for _, key in ipairs({"name","noun","exclude","suffix"}) do
+      local child = node[key]
+      if child then
+        if type(child[1]) == "string" then
+          table.insert(sTable[key], child[1])
+        elseif type(child[1]) == "table" then
+          for _, subnode in ipairs(child) do
+            if type(subnode[1]) == "string" then
+              table.insert(sTable[key], subnode[1])
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- Now go through each child of <data> 
+  local dataRoot = myHandler.root.data
+
+  for tagName, node in pairs(dataRoot) do
+    if tagName == "type" then
+      -- Single vs multiple <type>
+      if type(node[1]) == "table" then
+        -- multiple
+        for _, singleType in ipairs(node) do
+          parseTypeNode(singleType)
+        end
+      else
+        -- single
+        parseTypeNode(node)
+      end
+
+    elseif tagName == "sellable" then
+      -- Single vs multiple <sellable>
+      if type(node[1]) == "table" then
+        for _, singleSellable in ipairs(node) do
+          parseSellableNode(singleSellable)
+        end
+      else
+        parseSellableNode(node)
+      end
+
+    elseif tagName == "#text" then
+      -- whitespace or newlines, ignore
+    else
+      -- Some other tag or leftover node, skip or handle if needed
+    end
+  end
+
+  -- Done! gameObjData is now globally available in Mudlet
+  cecho("<yellow>[INFO] gameObjData has been parsed and stored!\n")
+end
+
+-------------------------------------------
+-- 4) Example usage
+-------------------------------------------
+-- You can call parseAndStoreGameObjData from the Mudlet command line or 
+-- from another script, passing the path to your XML file:
+-- parseAndStoreGameObjData("/path/to/gameobj-data.xml")
+--
+-- Then, any script in Mudlet can reference 'gameObjData'. For example:
+--   for k,v in pairs(gameObjData) do
+--     echo("Type: " .. k .. "\n")
+--   end
+-------------------------------------------
+tempTimer(5, function()
+  parseAndStoreGameObjData(customPath .. "gameobj-data.xml")
+end)

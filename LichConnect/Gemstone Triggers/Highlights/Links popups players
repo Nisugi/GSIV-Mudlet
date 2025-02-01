@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Links / Popups / Color</name>
+			<script>local debugMode = false 
+local function debugPrint(message) 
+    if debugMode then 
+        cecho("&lt;yellow&gt; " .. message .. "\n") 
+    end 
+end
+
+-- Get the current line
+local lineNumber = getLineNumber()
+local extractedMatches = {}
+local seenTags = {} -- Track unique matches to avoid duplicates
+
+for fullMatch, entityID, entityName in line:gmatch('(&lt;a exist="(%-?%d+)" noun="[%w%-_]+"&gt;([^&lt;]+)&lt;/a&gt;)') do
+    if not seenTags[entityName] then
+        local startColumn, endColumn = line:find(fullMatch, 1, true) -- Store position NOW
+        if startColumn and endColumn then
+            table.insert(extractedMatches, {
+                tag = fullMatch,  -- ✅ Store FULL tag
+                entityID = entityID,
+                entityName = entityName,
+                isNPC = false,  -- **Player detected**
+                startColumn = startColumn,
+                endColumn = endColumn
+            })
+            seenTags[entityName] = true  -- ✅ Prevent duplicate detection
+            debugPrint("[DEBUG] 🟢 Added Player: " .. entityName .. " (ID: " .. entityID .. ") at Columns: " .. startColumn .. " to " .. endColumn .. " with tag: " .. fullMatch)
+        end
+    end
+end
+
+for fullMatch, article, entityID, entityName in line:gmatch('(&lt;pushBold/&gt;(%a*%s*)&lt;a exist="(%d+)" noun="[%w%-_]+"&gt;([^&lt;]+)&lt;/a&gt;&lt;popBold/&gt;)') do
+    for i, entry in ipairs(extractedMatches) do  -- Loop through list
+        if entry.entityID == entityID then  -- Match by entityID
+            -- Find new start and end column
+            local startColumn, endColumn = line:find(fullMatch, 1, true)
+
+            -- Update entry with NPC-specific details
+            entry.entityName = article .. entityName  -- Add article (e.g., "a hulking panther")
+            entry.tag = fullMatch  -- Full NPC tag with &lt;pushBold/&gt; included
+            entry.startColumn = startColumn  -- Adjust start to include bold tags
+            entry.endColumn = endColumn
+            entry.isNPC = true  -- Ensure it's marked as an NPC
+
+            debugPrint("[DEBUG] 🟣 NPC Identified: " .. entry.entityName .. " (ID: " .. entityID .. ") at Columns: " .. startColumn .. " to " .. endColumn)
+
+            break  -- Exit loop once found
+        end
+    end
+end
+
+debugPrint("[DEBUG] 🔍 Checking extractedMatches Table Structure:")
+for key, value in pairs(extractedMatches) do
+    debugPrint(string.format("    Key: %s, Type: %s, Tag: %s", tostring(key), type(value), value.tag))
+end
+-- need to be sorted by startColum high to low so when we process things are in the right order.
+table.sort(extractedMatches, function(a, b)
+    return a.startColumn &gt; b.startColumn
+end)
+debugPrint("[DEBUG] 🔹 Sorted Matches by Start Column (Descending):")
+for i, match in ipairs(extractedMatches) do
+    debugPrint(string.format(
+        "    [%d] Entity Name: %s, ID: %s, Start: %d, End: %d, NPC: %s",
+        i, match.entityName, match.entityID, match.startColumn, match.endColumn, tostring(match.isNPC)
+    ))
+end
+
+-- **Process matches in reverse to prevent shifting issues**
+for index, match in pairs(extractedMatches) do
+    local tag = match.tag
+    local entityID = match.entityID
+    local entityName = match.entityName
+    local isNPC = match.isNPC
+    local startColumn = match.startColumn
+    local endColumn = match.endColumn
+
+    -- Set color based on NPC or player
+    local color = isNPC and (npcColors[entityName] or defaultNpcColor)
+                 or (linksColors[entityName] or defaultLinksColor)
+
+    debugPrint("[DEBUG] 🔹 Processing: " .. entityName .. " (" .. (isNPC and "NPC" or "Player") .. ") at Column: " .. startColumn .. " to " .. endColumn)
+
+    if moveCursor(startColumn - 1, lineNumber) then
+        debugPrint("[DEBUG] 🔹 Cursor moved to column " .. startColumn .. " on line " .. lineNumber)
+
+        if selectSection(startColumn, endColumn) then
+            debugPrint("[DEBUG] 🔹 Removing full tag: " .. tag)
+            
+
+            -- Define popup menu commands
+            local commands = {
+                [[send("look #]] .. entityID .. [[")]],
+                [[send("appraise #]] .. entityID .. [[")]],
+                [[send("target #]] .. entityID .. [[")]],
+            }
+            
+            if not isNPC then
+                table.insert(commands, [[send("profile #]] .. entityID .. [[")]])
+                table.insert(commands, [[send("join #]] .. entityID .. [[")]])
+                table.insert(commands, [[send("whisper #]] .. entityID .. [[")]])
+            end
+
+            -- Define tooltips
+            local hints = {
+                "Look at " .. entityName,
+                "Appraise " .. entityName,
+                "Target " .. entityName,
+            }
+
+            if not isNPC then
+                table.insert(hints, "View profile of " .. entityName)
+                table.insert(hints, "Join " .. entityName)
+                table.insert(hints, "Whisper to " .. entityName)
+            end
+            selectString(tag, 1)
+            setFgColor(unpack(color))
+            if showLinks then
+              replace("")
+              insertPopup(entityName, commands, hints, true)
+            end
+            deselect()
+            resetFormat()
+        end
+    end
+end
+</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;a exist="-?\d+" noun="\w+"&gt;[^&lt;]+&lt;/a&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

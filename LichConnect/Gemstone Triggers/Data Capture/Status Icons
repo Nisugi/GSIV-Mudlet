@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Status Icons</name>
+			<script>local line = getCurrentLine()
+
+selectCaptureGroup(1)
+replace("")
+deselect()
+resetFormat()
+
+for icon, visible in line:gmatch('&lt;indicator id="(%w+)" visible="(%w+)"/&gt;') do
+  charData.statusIcons[icon] = visible
+end
+--updateStatusIcons()
+
+-- &lt;indicator id="IconKNEELING" visible="n"/&gt;&lt;indicator id="IconPRONE" visible="n"/&gt;&lt;indicator id="IconSITTING" visible="y"/&gt;&lt;indicator id="IconSTANDING" visible="n"/&gt;You sit down.</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;indicator .*/&gt;</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>

@@ -1,0 +1,91 @@
+-- Create Buffs Window
+GUIFlex.Buffs = Adjustable.Container:new({ 
+  name = "GUIFlex.Buffs", 
+  titleText = "Buffs", 
+  x = "0%", y = "10%",
+  width = "200px", height = "20%",
+})
+
+-- Create Background Layer for the Mesh Pattern
+GUIFlex.BuffsBG = Geyser.Label:new({
+  name = "GUIFlex.BuffsBG",
+  x = "0%", y = "0%",
+  width = "100%", height = "100%"
+}, GUIFlex.Buffs)
+
+GUIFlex.BuffsBG:setBackgroundImage(imagePath .. "MeshBackground.png")
+
+-- Container for buff list
+GUIFlex.BuffList = Geyser.Container:new({
+  name = "GUIFlex.BuffList",
+  x = "0%", y = "0%",
+  width = "100%", height = "100%"
+}, GUIFlex.Buffs)
+
+-- Table to track Buff Labels
+GUIFlex.BuffEntries = {}
+
+
+
+-- Default color for unknown spells
+local defaultColor = {128, 128, 128} -- Grey
+
+-- Function to determine text color based on background brightness
+local function getTextColor(r, g, b)
+    local brightness = (r * 0.299 + g * 0.587 + b * 0.114)
+    local color = brightness > 128 and "black" or "white"
+    return color
+end
+
+-- Function to update buffs display
+function updateBuffs()
+    -- Clear previous entries
+    for _, buffLabel in pairs(GUIFlex.BuffEntries or {}) do
+        buffLabel:hide()
+    end
+    GUIFlex.BuffEntries = {}
+
+    local yOffset = 0
+    local buffHeight = 17 -- Each buff row height
+
+    -- Iterate over activeBuffs and display them
+    for spellID, buff in pairs(activeBuffs) do
+        -- Create time label (separate from buff bar)
+        local timeLabel = Geyser.Label:new({
+            name = "BuffTime_" .. spellID,
+            x = "0%", y = yOffset .. "px",
+            width = "20%", height = buffHeight .. "px",
+        }, GUIFlex.BuffList)
+
+        timeLabel:setStyleSheet("color: white; font-size: 12px; text-align: right; padding-right: 1px; background-color: rgba(0, 0, 0, 0.5);")
+        timeLabel:echo(string.format("<b>%s</b>", buff.time))
+
+        -- Determine colors based on spell name
+        local color = spellColors[buff.name] or defaultColor
+        local bgColor = string.format("rgb(%d, %d, %d)", color[1], color[2], color[3])
+        local textColor = getTextColor(color[1], color[2], color[3])
+
+        -- Create buff bar (aligned after the time)
+        local buffLabel = Geyser.Label:new({
+            name = "Buff_" .. spellID,
+            x = "22%", y = yOffset .. "px",
+            width = "78%", height = buffHeight .. "px",
+        }, GUIFlex.BuffList)
+
+        buffLabel:setStyleSheet(string.format([[
+            background-color: %s;
+            border: 1px solid #404040;
+            font-size: 12px;
+            padding-left: 5px;
+        ]], bgColor))
+
+        buffLabel:echo(string.format("<b style='color:%s;'>%s</b>", textColor, buff.name))
+
+        -- Store labels and update Y offset
+        GUIFlex.BuffEntries[spellID] = buffLabel
+        yOffset = yOffset + buffHeight
+    end
+end
+
+-- Example: Updating Buffs when activeBuffs changes
+updateBuffs()

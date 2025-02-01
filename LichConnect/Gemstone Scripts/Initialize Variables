@@ -1,0 +1,114 @@
+-- dependencies
+customPath = customPath or getMudletHomeDir() .. "/LichConnect/"
+imagePath = imagePath or customPath .. "/images/"
+package.path = package.path .. ";" .. customPath .. "/?.lua"
+rex = require("rex_pcre")
+
+
+local function setDefault(var, default)
+  if _G[var] == nil then
+    _G[var] = default
+  end
+end
+
+-- enable clickable popup menus
+showLinks = true
+
+GUIFlex = GUIFlex or {}
+
+-- Assigning default colors
+setDefault("promptColor", {192, 192, 192})
+setDefault("roomNameColor", {111, 48, 207})
+setDefault("defaultLinksColor", {168, 100, 82})  -- players / items
+setDefault("defaultNpcColor", {255, 0, 0})       -- npcs / creatures
+setDefault("defaultChannelColor", {255, 255, 255})
+setDefault("commandColor", {168, 100, 82})
+setDefault("enhancedColor", {255, 255, 0})
+
+-- Ensure color tables exist
+setDefault("linksColors", linksColors or {})
+setDefault("npcColors", npcColors or {})
+setDefault("spellColors", spellColors or {})
+setDefault("channelColors", channelColors or {
+    ["[Help]"] = {3, 148, 252},
+    ["[Merchant]"] = {3, 252, 57},
+    ["[General]"] = {123, 3, 252},
+    ["[OOC]"] = {156, 156, 156},
+    ["[Realm]"] = {255, 255, 255},
+    ["[Focused]"] = {255, 0, 0}
+})
+
+-- Uncomment and customize as needed
+-- setDefault("npcColors", {
+--     ["muscular brindlecat"] = {95, 145, 213}, -- Light blue
+--     ["ebon swine"] = {0, 255, 0},            -- Green
+--     ["spectacled bear"] = {255, 0, 0},       -- Red
+-- })
+-- setDefault("linksColors", {
+--     ["Nisugi"] = {0, 255, 0},      -- Green for Nisugi
+--     ["Sugiin"] = {0, 0, 255},      -- Blue for Sugiin
+-- })
+
+-- Assigning other variables
+setDefault("promptTime", 0)
+setDefault("promptContent", "&gt;")
+setDefault("imagePath", getMudletHomeDir() .. "/LichConnect/LichConnect/")
+setDefault("GUIFlex", GUIFlex or {})
+setDefault("prevLine", "")
+
+-- Assigning character data
+setDefault("charData", charData or {
+    activeSpells = {},
+    activeBuffs = {},
+    activeDebuffs = {},
+    activeCooldowns = {},
+    castTime = 0,
+    compassData = {},
+    encum = { text = "None", value = 0, blurb = "" },
+    health = { text = "health", value = 0 },
+    injuries = {
+        { id = "abdomen", name = "abdomen" },
+        { id = "back", name = "back" },
+        { id = "chest", name = "chest" },
+        { id = "head", name = "head" },
+        { id = "leftArm", name = "leftArm" },
+        { id = "leftEye", name = "leftEye" },
+        { id = "leftHand", name = "leftHand" },
+        { id = "leftLeg", name = "leftLeg" },
+        { id = "neck", name = "neck" },
+        { id = "nsys", name = "nsys" },
+        { id = "rightArm", name = "rightArm" },
+        { id = "rightEye", name = "rightEye" },
+        { id = "rightHand", name = "rightHand" },
+        { id = "rightLeg", name = "rightLeg" }
+    },
+    leftHand = "Empty",
+    mana = { text = "mana", value = 0 },
+    mindState = { text = "mind", value = 0 },
+    nextLvlPB = { text = "exp", value = "unknown" },
+    old_exp = 0,
+    pbarStance = { text = "unknown", text2 = "unknown", value = 0 },
+    rightHand = "Empty",
+    roomID = { current = 0, old = 0 },
+    roundTime = 0,
+    spellHand = "None",
+    spirit = { text = "spirit", value = 0 },
+    stamina = { text = "stamina", value = 0 },
+    statusIcons = {
+        IconKNEELING = "n",
+        IconSTANDING = "n",
+        IconSITTING = "n",
+        IconPRONE = "n",
+        IconBLEEDING = "n",
+        IconPOISONED = "n",
+        IconDISEASED = "n",
+        IconHIDDEN = "n",
+        IconINVISIBLE = "n",
+        IconWEBBED = "n",
+        IconJOINED = "n",
+        IconSTUNNED = "n"
+    }
+})
+
+-- Debug output
+echo("\n<green>✅ Mudlet variables initialized successfully!\n")

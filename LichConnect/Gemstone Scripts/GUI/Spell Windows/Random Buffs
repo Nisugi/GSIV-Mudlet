@@ -1,0 +1,54 @@
+-- Seed RNG for randomness
+math.randomseed(os.time())
+
+-- Example test data for activeBuffs
+activeSpells = {
+    ["115"] = {
+        name = "Fasthr's Reward",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["605"] = {
+        name = "Barkskin",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["801"] = {
+        name = "Resist Nature (33%)",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["910"] = {
+        name = "Sigil of Defense",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["911"] = {
+        name = "Sigil of Offense",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["912"] = {
+        name = "Sigil of Focus",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["913"] = {
+        name = "Sigil of Concentration",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["914"] = {
+        name = "Sigil of Major Bane",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    },
+    ["915"] = {
+        name = "Tangleweed Vigor",
+        time = string.format("%02d:%02d", math.random(0, 5), math.random(0, 59)),
+        value = math.random(10, 100)
+    }
+}
+
+-- Call updateBuffs() to refresh the UI with new data
+updateBuffs()

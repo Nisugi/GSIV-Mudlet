@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<TriggerPackage>
+		<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Channels</name>
+			<script>channelColors = channelColors or {
+  ["[Help]"] = {3, 148, 252},
+  ["[Merchant]"] = {3, 252, 57},
+  ["[General]"] = {123, 3, 252},
+  ["[OOC]"] = {156, 156, 156},
+  ["[Realm]"] = {255, 255, 255},
+  ["[Focused]"] = {255, 0, 0}
+} 
+
+local line = matches[1]
+local channel = line:match("%[.-%]")
+if channel then
+  local color = channelColors[channel] or {255, 255, 255}
+  if selectString(channel, 1) &gt; 0 then
+    setFgColor(unpack(color))
+    deselect()
+    resetFormat()
+  end
+end  
+
+for tag, name in line:gmatch('(%[Focused to &lt;a exist="[^"]+" noun="[^"]+"&gt;([^&lt;]+)&lt;/a&gt;%])') do
+  if name then
+    local color = channelColors["[Focused]"] or {255, 0, 0}
+    if selectString(tag, 1) &gt; 0 then
+      setFgColor(unpack(color))
+      deselct()
+      resetFormat()
+    end
+  end
+end</script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList>
+				<string>&lt;pushStream id="thoughts"/&gt;.+</string>
+			</regexCodeList>
+			<regexCodePropertyList>
+				<integer>1</integer>
+			</regexCodePropertyList>
+		</Trigger>
+	</TriggerPackage>
+</MudletPackage>
